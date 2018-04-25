@@ -1,6 +1,21 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Main {
-    //hallo jefta
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        List<City> cities = new ArrayList<City>();
+
+        for (int i = 0; i < 8; i++) {
+            cities.add(new City(
+                    ThreadLocalRandom.current().nextInt(10, 470),
+                    ThreadLocalRandom.current().nextInt(10, 470)
+            ));
+        }
+
+        TSPAlgorithm greedy = new GreedyAlgorithm(cities);
+
+        AlgorithmGUI gui = new AlgorithmGUI(greedy);
     }
 }
