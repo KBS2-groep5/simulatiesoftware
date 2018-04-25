@@ -14,13 +14,13 @@ public class AlgorithmPainter extends JPanel {
         setBackground(Color.WHITE);
     }
 
-    public void setCursor(int cursor) {
+    void setCursor(int cursor) {
         if(cursor >= 0 && cursor <= this.algorithm.getCityCount()) {
             this.cursor = cursor;
         }
     }
 
-    public void setCities(List<City> cities) {
+    void setCities(List<City> cities) {
         this.cities = cities;
     }
 

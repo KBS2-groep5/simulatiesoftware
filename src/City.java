@@ -7,15 +7,15 @@ public class City {
         this.y = y;
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 
-    public double getDistanceTo(City c2) {
+    double getDistanceTo(City c2) {
         double a = Math.max(this.x, c2.getX()) - Math.min(this.x, c2.getX());
         double b = Math.max(this.y, c2.getY()) - Math.min(this.y, c2.getY());
         return Math.sqrt(a*a + b*b);

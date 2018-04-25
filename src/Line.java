@@ -5,13 +5,13 @@ public class Line {
     private City b;
     private Color color;
 
-    public Line(City a, City b) {
+    Line(City a, City b) {
         this.a = a;
         this.b = b;
         this.color = Color.BLACK;
     }
 
-    public Color getColor() {
+    Color getColor() {
         return this.color;
     }
 
@@ -19,19 +19,19 @@ public class Line {
         this.color = color;
     }
 
-    public int getX1() {
+    int getX1() {
         return this.a.getX();
     }
 
-    public int getY1() {
+    int getY1() {
         return this.a.getY();
     }
 
-    public int getX2() {
+    int getX2() {
         return this.b.getX();
     }
 
-    public int getY2() {
+    int getY2() {
         return this.b.getY();
     }
 

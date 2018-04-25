@@ -1,11 +1,10 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
     public static void main(String[] args) {
-        List<City> cities = new ArrayList<City>();
+        List<City> cities = new ArrayList<>();
 
         for (int i = 0; i < 8; i++) {
             cities.add(new City(
@@ -16,6 +15,6 @@ public class Main {
 
         TSPAlgorithm greedy = new GreedyAlgorithm(cities);
 
-        AlgorithmGUI gui = new AlgorithmGUI(greedy);
+        new AlgorithmGUI(greedy);
     }
 }

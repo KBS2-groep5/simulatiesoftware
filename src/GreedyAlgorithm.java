@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GreedyAlgorithm implements TSPAlgorithm {
@@ -14,19 +13,15 @@ public class GreedyAlgorithm implements TSPAlgorithm {
         return this.solveSteps(this.cities.size());
     }
 
-    public List<City> solveUntil(int cursor) {
-        return this.cities.subList(0, cursor);
-    }
-
     public List<Line> solveSteps(int n) {
         if(this.cities.size() < 2) {
             this.solveTime = 0;
-            return new ArrayList<Line>();
+            return new ArrayList<>();
         }
 
         long startTime = System.nanoTime();
 
-        List<City> path = new ArrayList<City>();
+        List<City> path = new ArrayList<>();
         path.add(this.cities.get(0));
 
         int steps = 0;
@@ -36,7 +31,6 @@ public class GreedyAlgorithm implements TSPAlgorithm {
             for(int i = 0; i < this.cities.size(); i++) {
                 if(path.contains(this.cities.get(i))) continue;
                 double dist = this.cities.get(i).getDistanceTo(path.get(path.size() - 1));
-                // System.out.println("Dist to " + i + ": " + dist + " (" + path.get(path.size() - 1) + " -> " + this.cities.get(i));
                 if(dist < shortestDistance) {
                     shortestDistance = dist;
                     shortestIndex = i;
@@ -46,7 +40,7 @@ public class GreedyAlgorithm implements TSPAlgorithm {
             steps++;
         }
 
-        List<Line> result = new ArrayList<Line>();
+        List<Line> result = new ArrayList<>();
         for(int i = 0; i < path.size() - 1; i++) {
             result.add(new Line(path.get(i), path.get(i + 1)));
         }
