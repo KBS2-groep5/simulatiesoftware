@@ -3,12 +3,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListener {
     private TSPAlgorithm algorithm;
+    private TSPAlgorithmTimer algorithmTimer;
     private int cursor = 0;
 
     private final JButton nextButton;
@@ -21,11 +23,16 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
     private final JLabel stepButtonsLabel;
     private final JLabel solveFullyLabel;
     private final JButton solveFullyButton;
+    private final JLabel timeLabel;
+    private final JLabel timeTaken;
+    private ImageIcon nextIcon = null;
+    private ImageIcon previousIcon = null;
 
     AlgorithmGUI(TSPAlgorithm algorithm) {
         super();
 
         this.algorithm = algorithm;
+        this.algorithmTimer = new TSPAlgorithmTimer(algorithm);
 
         setTitle("Algorithm visualiser");
         setSize(800, 540);
@@ -50,11 +57,31 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         add(stepButtonsLabel);
 
         previousButton = new JButton("<--");
+
+        try {
+            previousIcon = new ImageIcon(this.getClass().getResource("back.png"));
+            previousButton.setText("");
+            previousButton.setIcon(previousIcon);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+
         previousButton.setBounds(640, 60, 50, 20);
         add(previousButton);
         previousButton.addActionListener(this);
 
         nextButton = new JButton("-->");
+
+        try {
+            nextIcon = new ImageIcon(this.getClass().getResource("next.png"));
+            nextButton.setText("");
+            nextButton.setIcon(nextIcon);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+
         nextButton.setBounds(700, 60, 50, 20);
         add(nextButton);
         nextButton.addActionListener(this);
@@ -63,7 +90,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         cityCountLabel.setBounds(510, 100, 120, 20);
         add(cityCountLabel);
 
-        cityCountSlider = new JSlider(JSlider.HORIZONTAL, 2, 50, 10);
+        cityCountSlider = new JSlider(JSlider.HORIZONTAL, 2, 100, 10);
         cityCountSlider.setBounds(633, 100, 125, 20);
         add(cityCountSlider);
         cityCountSlider.addChangeListener(this);
@@ -76,6 +103,14 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         solveFullyButton.setBounds(640, 138, 110, 24);
         add(solveFullyButton);
         solveFullyButton.addActionListener(this);
+
+        timeLabel = new JLabel("Tijd: ");
+        timeLabel.setBounds(510, 180, 120, 20);
+        add(timeLabel);
+
+        timeTaken = new JLabel(this.algorithmTimer.getHumanReadableAverageTime(algorithm.getCityList(), 100));
+        timeTaken.setBounds(640, 180, 120, 20);
+        add(timeTaken);
 
         setVisible(true);
     }
@@ -117,8 +152,9 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
                 ));
             }
 
-            this.algorithm.setCities(cities);
             this.panel.setCities(cities);
+
+            this.timeTaken.setText(this.algorithmTimer.getHumanReadableAverageTime(cities, 100));
 
             repaint();
         }

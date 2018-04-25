@@ -29,14 +29,11 @@ public class AlgorithmPainter extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
 
-        for(int i = 0; i < this.cities.size(); i++) {
-            City c = this.cities.get(i);
-            g.fillOval(c.getX() - 5, c.getY() - 5, 10, 10);
-//            g.drawChars(("" + i).toCharArray(), 0, ("" + i).length(), c.getX() + 6, c.getY());
-//            g.drawChars(("" + c.getX() + "x" + c.getY()).toCharArray(), 0, ("" + c.getX() + "x" + c.getY()).length(), c.getX() + 6, c.getY() + 10);
+        for (City c : this.cities) {
+            g.fillOval(c.getX() - 3, c.getY() - 3, 7, 7);
         }
 
-        List<Line> lines = algorithm.solve_n_lines(this.cursor);
+        List<Line> lines = algorithm.solveSteps(this.cursor);
         for (Line l : lines) {
             g.setColor(l.getColor());
             g.drawLine(l.getX1(), l.getY1(), l.getX2(), l.getY2());
