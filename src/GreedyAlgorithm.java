@@ -4,6 +4,9 @@ import java.util.List;
 public class GreedyAlgorithm implements TSPAlgorithm {
     private List<City> cities;
     private long solveTime = 0;
+    private int lineLength = 0;
+
+    public static final String NAME = "Greedy";
 
     GreedyAlgorithm(List<City> cities) {
         this.cities = cities;
@@ -41,9 +44,13 @@ public class GreedyAlgorithm implements TSPAlgorithm {
         }
 
         List<Line> result = new ArrayList<>();
+        int lineLength = 0;
         for(int i = 0; i < path.size() - 1; i++) {
             result.add(new Line(path.get(i), path.get(i + 1)));
+            lineLength += result.get(result.size() - 1).getLength();
         }
+
+        this.lineLength = lineLength;
         this.solveTime = System.nanoTime() - startTime;
         return result;
     }
@@ -62,6 +69,10 @@ public class GreedyAlgorithm implements TSPAlgorithm {
 
     public long getSolveTime() {
         return this.solveTime;
+    }
+
+    public int getLineLength() {
+        return this.lineLength;
     }
 }
 

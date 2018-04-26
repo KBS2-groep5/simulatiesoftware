@@ -11,6 +11,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
     private TSPAlgorithmTimer algorithmTimer;
     private int cursor = 0;
 
+    private final JComboBox<String> algorithmSelector;
     private final JButton nextButton;
     private final JButton previousButton;
     private final JLabel cursorLabel;
@@ -18,6 +19,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
     private final JSlider cityCountSlider;
     private final JButton solveFullyButton;
     private final JLabel timeTaken;
+    private final JLabel lineLength;
 
     AlgorithmGUI(TSPAlgorithm algorithm) {
         super();
@@ -46,9 +48,9 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         algorithmSelectorLabel.setBounds(510, 20, 120, 20);
         add(algorithmSelectorLabel);
 
-        JComboBox algorithmSelector = new JComboBox<String>();
+        algorithmSelector = new JComboBox<>(new String[] { "Greedy", "Random" });
         algorithmSelector.setBounds(640, 20, 110, 20);
-        algorithmSelector.addItem("Greedy");
+        algorithmSelector.addActionListener(this);
         add(algorithmSelector);
 
         JLabel stepsLabel = new JLabel("Aantal stappen:");
@@ -105,9 +107,17 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         timeLabel.setBounds(510, 170, 120, 20);
         add(timeLabel);
 
-        timeTaken = new JLabel(this.algorithmTimer.getHumanReadableAverageTime(algorithm.getCityList(), 100));
+        timeTaken = new JLabel(this.algorithmTimer.getHumanReadableAverageTime(algorithm.getCityList(), 500));
         timeTaken.setBounds(640, 170, 120, 20);
         add(timeTaken);
+
+        JLabel lineLengthLabel = new JLabel("Lengte: ");
+        lineLengthLabel.setBounds(510, 210, 120, 20);
+        add(lineLengthLabel);
+
+        lineLength = new JLabel("" + this.algorithm.getLineLength());
+        lineLength.setBounds(640, 210, 120, 20);
+        add(lineLength);
 
         setVisible(true);
     }
@@ -117,6 +127,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         if(e.getSource() == nextButton) {
             this.cursor += 1;
             this.cursorLabel.setText("" + this.cursor);
+            this.lineLength.setText("" + this.algorithm.getLineLength());
             panel.setCursor(this.cursor);
         }
 
@@ -125,6 +136,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
                 this.cursor -= 1;
             }
             this.cursorLabel.setText("" + this.cursor);
+            this.lineLength.setText("" + this.algorithm.getLineLength());
             panel.setCursor(this.cursor);
         }
 
@@ -132,6 +144,24 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
             this.cursor = this.algorithm.getCityCount();
             panel.setCursor(this.cursor);
             this.cursorLabel.setText("" + this.cursor);
+            this.lineLength.setText("" + this.algorithm.getLineLength());
+        }
+
+        if(e.getSource() == algorithmSelector) {
+            @SuppressWarnings("unchecked")
+            JComboBox<String> source = (JComboBox<String>) e.getSource();
+            String selected = (String) source.getSelectedItem();
+            if(selected == null) return;
+
+            if(selected.equals(GreedyAlgorithm.NAME)) {
+                System.out.println("WEEEEE");
+//                List<City> cities =
+                this.algorithm = new GreedyAlgorithm(new ArrayList<>());
+            }
+            if(selected.equals(RandomAlgorithm.NAME)) {
+                System.out.println("WOOOOO");
+                this.algorithm = new RandomAlgorithm(new ArrayList<>());
+            }
         }
 
         repaint();
@@ -151,7 +181,9 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
             this.panel.setCities(cities);
 
-            this.timeTaken.setText(this.algorithmTimer.getHumanReadableAverageTime(cities, 100));
+            this.timeTaken.setText(this.algorithmTimer.getHumanReadableAverageTime(cities, 500));
+
+            this.lineLength.setText("" + this.algorithm.getLineLength());
 
             repaint();
         }

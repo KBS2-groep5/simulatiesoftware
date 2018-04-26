@@ -35,6 +35,10 @@ public class Line {
         return this.b.getY();
     }
 
+    int getLength() {
+        return (int) this.a.getDistanceTo(this.b);
+    }
+
     @Override
     public String toString() {
         return "(" + this.a.getX() + 'x' + this.a.getY() + " -> " + this.b.getX() + 'x' + this.b.getY() + ')';

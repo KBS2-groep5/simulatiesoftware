@@ -7,4 +7,8 @@ public interface TSPAlgorithm {
     int getCityCount();
     void setCities(List<City> cities);
     long getSolveTime();
+    int getLineLength();
+
+    // Not sure if this is best practice
+    static String NAME = "???";
 }
