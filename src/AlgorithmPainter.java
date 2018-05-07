@@ -3,25 +3,22 @@ import java.util.List;
 import javax.swing.*;
 
 public class AlgorithmPainter extends JPanel {
-    private TSPAlgorithm algorithm;
     private List<City> cities;
-    private int cursor = 0;
+    private List<Line> path;
 
-    AlgorithmPainter(TSPAlgorithm algorithm) {
-        this.algorithm = algorithm;
-        this.cities = algorithm.getCityList();
+    AlgorithmPainter(List<City> cities, List<Line> path) {
+        this.cities = cities;
+        this.path = path;
         setPreferredSize(new Dimension(480, 480));
         setBackground(Color.WHITE);
     }
 
-    void setCursor(int cursor) {
-        if(cursor >= 0 && cursor <= this.algorithm.getCityCount()) {
-            this.cursor = cursor;
-        }
-    }
-
     void setCities(List<City> cities) {
         this.cities = cities;
+    }
+
+    void setPath(List<Line> path) {
+        this.path = path;
     }
 
     @Override
@@ -29,14 +26,13 @@ public class AlgorithmPainter extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
 
-        for (City c : this.cities) {
-            g.fillOval(c.getX() - 3, c.getY() - 3, 7, 7);
-        }
-
-        List<Line> lines = algorithm.solveSteps(this.cursor);
-        for (Line l : lines) {
+        for (Line l : this.path) {
             g.setColor(l.getColor());
             g.drawLine(l.getX1(), l.getY1(), l.getX2(), l.getY2());
+        }
+
+        for (City c : this.cities) {
+            g.fillOval(c.getX() - 3, c.getY() - 3, 7, 7);
         }
     }
 }

@@ -8,7 +8,6 @@ import javax.swing.event.ChangeListener;
 
 public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListener {
     private TSPAlgorithm algorithm;
-    private TSPAlgorithmTimer algorithmTimer;
     private int cursor = 0;
 
     private final JComboBox<String> algorithmSelector;
@@ -20,14 +19,14 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
     private final JButton solveFullyButton;
     private final JLabel timeTaken;
     private final JLabel lineLength;
+    private final JLabel pointCount;
 
     AlgorithmGUI(TSPAlgorithm algorithm) {
         super();
 
         this.algorithm = algorithm;
-        this.algorithmTimer = new TSPAlgorithmTimer(algorithm);
 
-        setTitle("Algorithm visualiser");
+        setTitle("Traveling Salesman Problem");
         setSize(800, 540);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLayout(new FlowLayout());
@@ -40,7 +39,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
             e.printStackTrace();
         }
 
-        panel = new AlgorithmPainter(this.algorithm);
+        panel = new AlgorithmPainter(this.algorithm.getCityList(), new ArrayList<>());
         panel.setBounds(10, 10, 480, 480);
         add(panel);
 
@@ -94,29 +93,37 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         add(cityCountSlider);
         cityCountSlider.addChangeListener(this);
 
+        JLabel pointCountLabel = new JLabel("Aantal punten:");
+        pointCountLabel.setBounds(510, 140, 120, 20);
+        add(pointCountLabel);
+
+        pointCount = new JLabel("" + this.algorithm.getCityCount());
+        pointCount.setBounds(640, 140, 120, 12);
+        add(pointCount);
+
         JLabel solveFullyLabel = new JLabel("Algoritme starten:");
-        solveFullyLabel.setBounds(510, 140, 120, 20);
+        solveFullyLabel.setBounds(510, 170, 120, 20);
         add(solveFullyLabel);
 
         solveFullyButton = new JButton("Start");
-        solveFullyButton.setBounds(640, 138, 110, 24);
+        solveFullyButton.setBounds(640, 168, 110, 24);
         add(solveFullyButton);
         solveFullyButton.addActionListener(this);
 
         JLabel timeLabel = new JLabel("Tijd: ");
-        timeLabel.setBounds(510, 170, 120, 20);
+        timeLabel.setBounds(510, 200, 120, 20);
         add(timeLabel);
 
-        timeTaken = new JLabel(this.algorithmTimer.getHumanReadableAverageTime(algorithm.getCityList(), 500));
-        timeTaken.setBounds(640, 170, 120, 20);
+        timeTaken = new JLabel(TSPAlgorithmTimer.getHumanReadableAverageTime(this.algorithm));
+        timeTaken.setBounds(640, 200, 120, 20);
         add(timeTaken);
 
         JLabel lineLengthLabel = new JLabel("Lengte: ");
-        lineLengthLabel.setBounds(510, 210, 120, 20);
+        lineLengthLabel.setBounds(510, 230, 120, 20);
         add(lineLengthLabel);
 
-        lineLength = new JLabel("" + this.algorithm.getLineLength());
-        lineLength.setBounds(640, 210, 120, 20);
+        lineLength = new JLabel("0");
+        lineLength.setBounds(640, 230, 120, 20);
         add(lineLength);
 
         setVisible(true);
@@ -127,8 +134,8 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         if(e.getSource() == nextButton) {
             this.cursor += 1;
             this.cursorLabel.setText("" + this.cursor);
+            this.panel.setPath(this.algorithm.solveSteps(this.cursor));
             this.lineLength.setText("" + this.algorithm.getLineLength());
-            panel.setCursor(this.cursor);
         }
 
         if(e.getSource() == previousButton) {
@@ -136,14 +143,14 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
                 this.cursor -= 1;
             }
             this.cursorLabel.setText("" + this.cursor);
+            this.panel.setPath(this.algorithm.solveSteps(this.cursor));
             this.lineLength.setText("" + this.algorithm.getLineLength());
-            panel.setCursor(this.cursor);
         }
 
         if(e.getSource() == solveFullyButton) {
-            this.cursor = this.algorithm.getCityCount();
-            panel.setCursor(this.cursor);
+            this.cursor = this.algorithm.getCityCount() - 1;
             this.cursorLabel.setText("" + this.cursor);
+            this.panel.setPath(this.algorithm.solveSteps(this.cursor));
             this.lineLength.setText("" + this.algorithm.getLineLength());
         }
 
@@ -155,13 +162,15 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
             if(selected.equals(GreedyAlgorithm.NAME)) {
                 System.out.println("WEEEEE");
-//                List<City> cities =
                 this.algorithm = new GreedyAlgorithm(new ArrayList<>());
             }
             if(selected.equals(RandomAlgorithm.NAME)) {
                 System.out.println("WOOOOO");
                 this.algorithm = new RandomAlgorithm(new ArrayList<>());
             }
+
+            this.panel.setPath(this.algorithm.solveSteps(this.cursor));
+            this.lineLength.setText("" + this.algorithm.getLineLength());
         }
 
         repaint();
@@ -169,23 +178,28 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
-        if(source == cityCountSlider && !source.getValueIsAdjusting()) {
-            List<City> cities = new ArrayList<>();
+        if(source == cityCountSlider) {
+            this.pointCount.setText("" + source.getValue());
 
-            for (int i = 0; i < source.getValue(); i++) {
-                cities.add(new City(
-                        ThreadLocalRandom.current().nextInt(10, 470),
-                        ThreadLocalRandom.current().nextInt(10, 470)
-                ));
+            if (!source.getValueIsAdjusting()) {
+                List<City> cities = new ArrayList<>();
+
+                for (int i = 0; i < source.getValue(); i++) {
+                    cities.add(new City(
+                            ThreadLocalRandom.current().nextInt(10, 470),
+                            ThreadLocalRandom.current().nextInt(10, 470)
+                    ));
+                }
+
+                this.algorithm.setCities(cities);
+                this.panel.setCities(cities);
+                this.panel.setPath(this.algorithm.solveSteps(this.cursor));
+                this.lineLength.setText("" + this.algorithm.getLineLength());
+
+                this.timeTaken.setText(TSPAlgorithmTimer.getHumanReadableAverageTime(this.algorithm));
+
+                repaint();
             }
-
-            this.panel.setCities(cities);
-
-            this.timeTaken.setText(this.algorithmTimer.getHumanReadableAverageTime(cities, 500));
-
-            this.lineLength.setText("" + this.algorithm.getLineLength());
-
-            repaint();
         }
     }
 

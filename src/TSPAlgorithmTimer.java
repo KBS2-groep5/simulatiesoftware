@@ -1,23 +1,14 @@
-import java.util.List;
-
 class TSPAlgorithmTimer {
-    private TSPAlgorithm algorithm;
-
-    TSPAlgorithmTimer(TSPAlgorithm algorithm) {
-        this.algorithm = algorithm;
-    }
-
-    long getAverageTime(List<City> cities, int repetitions) {
-        this.algorithm.setCities(cities);
+    private static long getAverageTime(TSPAlgorithm algorithm) {
         long totalTime = 0;
-        for(int i = 0; i < repetitions; i++) {
+        for(int i = 0; i < 100; i++) {
             algorithm.solve();
             totalTime += algorithm.getSolveTime();
         }
-        return totalTime / repetitions;
+        return totalTime / 100;
     }
 
-    String getHumanReadableAverageTime(List<City> cities, int repetitions) {
-        return "" + String.valueOf(this.getAverageTime(cities, repetitions) / 1000) + " μs";
+    static String getHumanReadableAverageTime(TSPAlgorithm algorithm) {
+        return "" + String.valueOf(getAverageTime(algorithm) / 1000) + " μs";
     }
 }

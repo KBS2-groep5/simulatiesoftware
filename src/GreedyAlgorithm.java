@@ -17,6 +17,7 @@ public class GreedyAlgorithm implements TSPAlgorithm {
     }
 
     public List<Line> solveSteps(int n) {
+        System.out.println("Solving " + n + " steps");
         if(this.cities.size() < 2) {
             this.solveTime = 0;
             return new ArrayList<>();
@@ -43,6 +44,8 @@ public class GreedyAlgorithm implements TSPAlgorithm {
             steps++;
         }
 
+        this.solveTime = System.nanoTime() - startTime;
+
         List<Line> result = new ArrayList<>();
         int lineLength = 0;
         for(int i = 0; i < path.size() - 1; i++) {
@@ -51,7 +54,6 @@ public class GreedyAlgorithm implements TSPAlgorithm {
         }
 
         this.lineLength = lineLength;
-        this.solveTime = System.nanoTime() - startTime;
         return result;
     }
 
