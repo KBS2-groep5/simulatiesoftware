@@ -1,7 +1,7 @@
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -161,12 +161,12 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
             if(selected == null) return;
 
             if(selected.equals(GreedyAlgorithm.NAME)) {
-                System.out.println("WEEEEE");
-                this.algorithm = new GreedyAlgorithm(new ArrayList<>());
+                var cities = this.algorithm.getCityList();
+                this.algorithm = new GreedyAlgorithm(cities);
             }
             if(selected.equals(RandomAlgorithm.NAME)) {
-                System.out.println("WOOOOO");
-                this.algorithm = new RandomAlgorithm(new ArrayList<>());
+                var cities = this.algorithm.getCityList();
+                this.algorithm = new RandomAlgorithm(cities);
             }
 
             this.panel.setPath(this.algorithm.solveSteps(this.cursor));
@@ -184,11 +184,10 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
             if (!source.getValueIsAdjusting()) {
                 List<City> cities = new ArrayList<>();
 
+                Random rand = new Random(5);
+
                 for (int i = 0; i < source.getValue(); i++) {
-                    cities.add(new City(
-                            ThreadLocalRandom.current().nextInt(10, 470),
-                            ThreadLocalRandom.current().nextInt(10, 470)
-                    ));
+                    cities.add(new City(10 + rand.nextInt(460), 10 + rand.nextInt(460)));
                 }
 
                 this.algorithm.setCities(cities);

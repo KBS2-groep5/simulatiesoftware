@@ -6,18 +6,19 @@ public class GreedyAlgorithm implements TSPAlgorithm {
     private long solveTime = 0;
     private int lineLength = 0;
 
-    public static final String NAME = "Greedy";
+    static final String NAME = "Greedy";
 
     GreedyAlgorithm(List<City> cities) {
         this.cities = cities;
     }
 
+    // This method is only used in TSPAlgoritmTimer
     public List<Line> solve() {
         return this.solveSteps(this.cities.size());
     }
 
+    // This is the method used by AlgorithmGUI
     public List<Line> solveSteps(int n) {
-        System.out.println("Solving " + n + " steps");
         if(this.cities.size() < 2) {
             this.solveTime = 0;
             return new ArrayList<>();
@@ -40,10 +41,12 @@ public class GreedyAlgorithm implements TSPAlgorithm {
                     shortestIndex = i;
                 }
             }
+            //noinspection ConstantConditions
             path.add(this.cities.get(shortestIndex));
             steps++;
         }
 
+        // The time should be calculated before creating the lines because they're only used for visualization
         this.solveTime = System.nanoTime() - startTime;
 
         List<Line> result = new ArrayList<>();
