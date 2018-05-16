@@ -1,15 +1,13 @@
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListener {
-    private TSPAlgorithm algorithm;
-    private int cursor = 0;
-
     private final JComboBox<String> algorithmSelector;
     private final JButton nextButton;
     private final JButton previousButton;
@@ -20,6 +18,8 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
     private final JLabel timeTaken;
     private final JLabel lineLength;
     private final JLabel pointCount;
+    private TSPAlgorithm algorithm;
+    private int cursor = 0;
 
     AlgorithmGUI(TSPAlgorithm algorithm) {
         super();
@@ -34,8 +34,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -47,7 +46,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         algorithmSelectorLabel.setBounds(510, 20, 120, 20);
         add(algorithmSelectorLabel);
 
-        algorithmSelector = new JComboBox<>(new String[] { "Greedy", "Random" });
+        algorithmSelector = new JComboBox<>(new String[]{"Greedy", "Random"});
         algorithmSelector.setBounds(640, 20, 110, 20);
         algorithmSelector.addActionListener(this);
         add(algorithmSelector);
@@ -66,7 +65,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
         previousButton = new JButton("<--");
         ImageIcon previousIcon = loadIcon("back.png");
-        if(previousIcon != null) {
+        if (previousIcon != null) {
             previousButton.setText("");
             previousButton.setIcon(previousIcon);
         }
@@ -76,7 +75,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
         nextButton = new JButton("-->");
         ImageIcon nextIcon = loadIcon("next.png");
-        if(nextIcon != null) {
+        if (nextIcon != null) {
             nextButton.setText("");
             nextButton.setIcon(nextIcon);
         }
@@ -131,15 +130,15 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == nextButton) {
+        if (e.getSource() == nextButton) {
             this.cursor += 1;
             this.cursorLabel.setText("" + this.cursor);
             this.panel.setPath(this.algorithm.solveSteps(this.cursor));
             this.lineLength.setText("" + this.algorithm.getLineLength());
         }
 
-        if(e.getSource() == previousButton) {
-            if(this.cursor > 0) {
+        if (e.getSource() == previousButton) {
+            if (this.cursor > 0) {
                 this.cursor -= 1;
             }
             this.cursorLabel.setText("" + this.cursor);
@@ -147,24 +146,24 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
             this.lineLength.setText("" + this.algorithm.getLineLength());
         }
 
-        if(e.getSource() == solveFullyButton) {
+        if (e.getSource() == solveFullyButton) {
             this.cursor = this.algorithm.getCityCount() - 1;
             this.cursorLabel.setText("" + this.cursor);
             this.panel.setPath(this.algorithm.solveSteps(this.cursor));
             this.lineLength.setText("" + this.algorithm.getLineLength());
         }
 
-        if(e.getSource() == algorithmSelector) {
+        if (e.getSource() == algorithmSelector) {
             @SuppressWarnings("unchecked")
             JComboBox<String> source = (JComboBox<String>) e.getSource();
             String selected = (String) source.getSelectedItem();
-            if(selected == null) return;
+            if (selected == null) return;
 
-            if(selected.equals(GreedyAlgorithm.NAME)) {
+            if (selected.equals(GreedyAlgorithm.NAME)) {
                 var cities = this.algorithm.getCityList();
                 this.algorithm = new GreedyAlgorithm(cities);
             }
-            if(selected.equals(RandomAlgorithm.NAME)) {
+            if (selected.equals(RandomAlgorithm.NAME)) {
                 var cities = this.algorithm.getCityList();
                 this.algorithm = new RandomAlgorithm(cities);
             }
@@ -178,7 +177,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
 
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
-        if(source == cityCountSlider) {
+        if (source == cityCountSlider) {
             this.pointCount.setText("" + source.getValue());
 
             if (!source.getValueIsAdjusting()) {
@@ -206,8 +205,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         try {
             java.net.URL path = this.getClass().getResource(name);
             return new ImageIcon(path);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Failed to load icon: " + name);
             return null;
         }
