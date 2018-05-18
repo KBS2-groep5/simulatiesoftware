@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
-import java.util.Random;
 
 public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorithm {
     public ArrayList<Integer> calcArray = new ArrayList<>();
@@ -9,6 +7,7 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
     private ArrayList<City> tempCities = new ArrayList<>();
     private int citiesCount;
     private long maxSolutions = 0;
+    private Solution currentBest;
 
     private ArrayList<City> cities;
     private long solveTime = 0;
@@ -20,7 +19,7 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
     static final String NAME = "Brute Force";
 
     BruteForceAlgorithm(List<City> cities) {
-        for(City c :cities){
+        for (City c : cities) {
             this.cities.add(c);
             this.tempCities.add(c);
         }
@@ -44,135 +43,86 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
 
         long startTime = System.nanoTime();
 
-        List<City> path = new ArrayList<>();
-        path.add(this.cities.get(0));
-
         int steps = 0;
 
-        //Fill CalcArray with int values for referencing index values later on.
-        for(int iC = 0; iC < citiesCount; iC++){
+
+
+
+
+        // Fill CalcArray with int values for referencing index values later on.
+        for (int iC = 0; iC < citiesCount; iC++) {
             calcArray.add(iC);
         }
-        new Solution(cities);
+        currentBest = new Solution(tempCities);
         steps++;
 
-        //Start algorythm loop
-        for (int i = 0; i < maxSolutions-1; i++) {
+        // Start algorythm loop
+        for (int i = 0; i < maxSolutions - 1; i++) {
+            List<City> path = new ArrayList<>();
+            path.add(this.tempCities.get(0));
 
-            if(ix < jx){
-
+            // Using lexicographic ordering, for reference see: https://www.quora.com/How-would-you-explain-an-algorithm-that-generates-permutations-using-lexicographic-ordering
+            // Find the largest x such that P[x]<P[x+1].
+            int iI = 0;
+            for (int iL = 0; iL < citiesCount - 1; iL++) {
+                if (calcArray.get(iL) < calcArray.get(iL + 1)) {
+                    iI = iL;
+                }
             }
 
-            super.swap(calcArray, ix, jx);
-            new Solution();
-
-
-
-
-
-
-            for (int isol = 0; isol < cities.size(); isol++) {
-                //Storage of solution being worked on:
-                Solution sol = new Solution(); //TODO: Check if new Solution objects are made, or if it overides the same object. Possible solution: Factory.
-
-                //Make temporary array which it can empty without problems.
-                List<City> tempCities = new ArrayList<>();
-                for (City c : cities) {
-                    tempCities.add(c);
+            // Find the largest y such that P[x]<P[y].
+            int iJ = 0;
+            for (int iLL = 0; iLL < citiesCount - 1; iLL++) {
+                if (iJ > iI) {
+                    iJ = iLL;
                 }
-                sol.addCity(tempCities.get(i));
-                tempCities.remove(i);
+            }
+            // Swap P[x] and P[y].
+            super.swap(calcArray, iI, iJ);
 
-                while (tempCities.size() > 0) {
-                    //Check to see if this solution already exists at second to last city:
-                    int similarityCount = 0;
-                    int attemptFinal = 0;
-                    for (Solution s : solutions) {
-                        for (int icomp = 0; icomp < sol.getSolCities().size(); icomp++) {
-                            if (sol.getSolCity(icomp) == s.getSolCity(icomp)) {
-                                similarityCount++;
-                            }
-                        }
-                    }
-                    //Check if there is still a solution available in this branch. Because at this point only 2 different sollutions are avaiable.
-                    if(tempCities.size() < 3){
-                        int solAvailable = 2;
-                        for (Solution s : solutions) {
-                            int dupeCheck = 0;
-                            for (int ifin = 0; ifin < sol.getSolCities().size(); ifin++) {
-                                if (sol.getSolCity(ifin) == s.getSolCity(ifin)) {
-                                    dupeCheck++;
-                                }
-                                if(dupeCheck == sol.getSolCities().size()){
-                                    solAvailable--;
-                                }
-                            }
-                        }
-                        if(solAvailable < 1){
-
-                        }
-
-                    }
-                    // If there are less similarities then the amount of cities squared, -1 , it means the solution is still unique.
-                    if((similarityCount < (sol.getSolCities().size() * sol.getSolCities().size()) && tempCities.size() > 2)){
-                        int x = rand.nextInt();
-                        sol.addCity(tempCities.get(x));
-                        tempCities.remove(x);
-                        variableRandMax--;
-                        steps++;
-                    }
-                    //TODO: FIX THIS!!
-                    List<Line> result = new ArrayList<>();
-                    int lineLength = 0;
-                    for(int i = 0; i < path.size() - 1; i++) {
-                        result.add(new Line(path.get(i), path.get(i + 1)));
-                        lineLength += result.get(result.size() - 1).getLength();
-                    }
-                    //TODO FIX THIS ^^^^
-
-                    this.lineLength = lineLength;
-                    return result;
-                }
-
-
-                solutions.add(sol);
+            // Reverse P[x+1 .. n].
+            int iX = iI;
+            int jX = citiesCount - 1;
+            int countToReverse = citiesCount - iI;
+            for (int iLLL = 0; iLLL < countToReverse / 2; iLLL++) {
+                super.swap(calcArray, iX, jX);
+                iX++;
+                jX--;
+            }
+            for (int iTC = 0; iTC < citiesCount; iTC++) {
+                tempCities.set(iTC, cities.get(calcArray.get(iTC)));
+            }
+            new Solution(tempCities);
+            steps++;
+            while (steps < n && citiesCount > path.size()) {
+                //noinspection ConstantConditions
+                path.add(this.tempCities.get(steps));
 
             }
+            //TODO: Pauze the timer temporarily
+            List<Line> result = new ArrayList<>();
+            int lineLength = 0;
+            for (int iP = 0; iP < path.size() - 1; iP++) {
+                result.add(new Line(path.get(iP), path.get(iP + 1)));
+                lineLength += result.get(result.size() - 1).getLength();
+            }
+
+            this.lineLength = lineLength;
+            return result;
+
+            //TODO: Start timer again.
         }
 
-        //TODO: Integrate Time, steps, previous and Next correctly into algorythm.
 
-        while (steps < n && this.cities.size() > path.size()) {
-
-            double shortestDistance = 99999;
-            Integer shortestIndex = null;
-            for (int i = 0; i < this.cities.size(); i++) {
-                if (path.contains(this.cities.get(i))) continue;
-                double dist = this.cities.get(i).getDistanceTo(path.get(path.size() - 1));
-                if (dist < shortestDistance) {
-                    shortestDistance = dist;
-                    shortestIndex = i;
-                }
-            }
-            //noinspection ConstantConditions
-            path.add(this.cities.get(shortestIndex));
-
-        }
 
         // The time should be calculated before creating the lines because they're only used for visualization
         this.solveTime = System.nanoTime() - startTime;
-
-        List<Line> result = new ArrayList<>();
-        int lineLength = 0;
-        for (int i = 0; i < path.size() - 1; i++) {
-            result.add(new Line(path.get(i), path.get(i + 1)));
-            lineLength += result.get(result.size() - 1).getLength();
-        }
-
+        List result = new List[1,2,3,4,5];
         this.lineLength = lineLength;
         return result;
-    }
 
+
+    }
     public List<City> getCityList() {
         return this.cities;
     }
@@ -181,8 +131,13 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
         return this.cities.size();
     }
 
-    public void setCities(List<City> cities) {
-        this.cities = cities;
+    public void setCities(List<City> cities) {        //this.cities = cities;
+
+        //TODO: Proper fix for this, change Cities so that it can be used.
+        for (City c : cities) {
+            this.cities.add(c);
+            this.tempCities.add(c);
+        }
     }
 
     public long getSolveTime() {

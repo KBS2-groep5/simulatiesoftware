@@ -46,7 +46,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         algorithmSelectorLabel.setBounds(510, 20, 120, 20);
         add(algorithmSelectorLabel);
 
-        algorithmSelector = new JComboBox<>(new String[]{"Greedy", "Random"});
+        algorithmSelector = new JComboBox<>(new String[]{"Greedy", "Random", "BruteForceAlgorithm"});
         algorithmSelector.setBounds(640, 20, 110, 20);
         algorithmSelector.addActionListener(this);
         add(algorithmSelector);

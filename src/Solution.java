@@ -25,4 +25,17 @@ public class Solution {
     public List<City> getSolCities() {
         return solCities;
     }
+
+    public void setTotalLength(int totalLength) {
+        this.totalLength = totalLength;
+    }
+
+    public void setSolCities(ArrayList<City> solCities) {
+        this.solCities = solCities;
+    }
+
+    public int getTotalLength() {
+
+        return totalLength;
+    }
 }

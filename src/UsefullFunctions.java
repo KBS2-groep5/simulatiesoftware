@@ -11,9 +11,9 @@ public abstract class UsefullFunctions {
         return fact;
     }
 
-    public void swap (Integer[] a, int i, int j){
-        int temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
+    public void swap (ArrayList<Integer> a, int i, int j){
+        int temp = a.get(i);
+        a.set(i, a.get(j));
+        a.set(j, temp);
     }
 }
