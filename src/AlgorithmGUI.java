@@ -167,6 +167,10 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
                 var cities = this.algorithm.getCityList();
                 this.algorithm = new RandomAlgorithm(cities);
             }
+            if(selected.equals(BruteForceAlgorithm.NAME)) {
+                var cities = this.algorithm.getCityList();
+                this.algorithm = new BruteForceAlgorithm(cities);
+            }
 
             this.panel.setPath(this.algorithm.solveSteps(this.cursor));
             this.lineLength.setText("" + this.algorithm.getLineLength());
