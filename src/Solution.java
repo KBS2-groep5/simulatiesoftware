@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Solution {
-    private int totalLength;
+    private double totalLength;
     private ArrayList<City> solCities;
 
     public Solution(){
@@ -26,7 +26,7 @@ public class Solution {
         return solCities;
     }
 
-    public void setTotalLength(int totalLength) {
+    public void setTotalLength(double totalLength) {
         this.totalLength = totalLength;
     }
 
@@ -34,7 +34,7 @@ public class Solution {
         this.solCities = solCities;
     }
 
-    public int getTotalLength() {
+    public double getTotalLength() {
 
         return totalLength;
     }

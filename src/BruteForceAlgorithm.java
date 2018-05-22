@@ -2,30 +2,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorithm {
+    static final String NAME = "BruteForce";
     public ArrayList<Integer> calcArray = new ArrayList<>();
-    private ArrayList<Solution> solutions;
+    //private ArrayList<Solution> solutions;                   <- niet praktisch om bij te houden met Brute Force, gezien de gigantiche hoeveelheid oplossingen.
     private ArrayList<City> tempCities = new ArrayList<>();
     private int citiesCount;
     private long maxSolutions = 0;
+    double pathLength = 0;
+    double totalPathLength = 0;
     private Solution currentBest;
 
     private ArrayList<City> cities;
     private long solveTime = 0;
     private int lineLength = 0;
 
-
-    //Random rand = new Random(maxIndex);
-
-    static final String NAME = "Brute Force";
-
-    BruteForceAlgorithm(List<City> cities) {
+    public BruteForceAlgorithm(List<City> cities) {
         for (City c : cities) {
             this.cities.add(c);
             this.tempCities.add(c);
         }
-        this.solutions = new ArrayList<>();
+        //this.solutions = new ArrayList<>();
         this.citiesCount = this.cities.size();
         this.maxSolutions = super.factorial(citiesCount);
+
+        //TODO: remove these temporary checkers
+        System.out.println(tempCities);
+        System.out.println(this.citiesCount);
+        System.out.println(maxSolutions);
     }
 
     // This method is only used in TSPAlgoritmTimer
@@ -46,20 +49,29 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
         int steps = 0;
 
 
-
-
-
         // Fill CalcArray with int values for referencing index values later on.
         for (int iC = 0; iC < citiesCount; iC++) {
             calcArray.add(iC);
         }
-        currentBest = new Solution(tempCities);
+
+        for (int iD = 0; iD < 0; iD++){
+            pathLength = this.tempCities.get(iD).getDistanceTo(tempCities.get(iD+1));
+            totalPathLength += pathLength;
+        }
+
+        Solution solx = new Solution(tempCities);
+        solx.setTotalLength(totalPathLength);
+        currentBest = solx;
         steps++;
 
         // Start algorythm loop
         for (int i = 0; i < maxSolutions - 1; i++) {
             List<City> path = new ArrayList<>();
             path.add(this.tempCities.get(0));
+            List<Line> result = new ArrayList<>();
+            int lineLength = 0;
+            double pathLength = 0;
+            double totalPathLength = 0;
 
             // Using lexicographic ordering, for reference see: https://www.quora.com/How-would-you-explain-an-algorithm-that-generates-permutations-using-lexicographic-ordering
             // Find the largest x such that P[x]<P[x+1].
@@ -91,21 +103,33 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
             }
             for (int iTC = 0; iTC < citiesCount; iTC++) {
                 tempCities.set(iTC, cities.get(calcArray.get(iTC)));
+                path.add(this.tempCities.get(iTC));
             }
-            new Solution(tempCities);
-            steps++;
-            while (steps < n && citiesCount > path.size()) {
-                //noinspection ConstantConditions
-                path.add(this.tempCities.get(steps));
 
+            //Calculate path length for this solution
+            for (int iD = 0; iD < 0; iD++){
+                pathLength = this.tempCities.get(iD).getDistanceTo(path.get(iD+1));
+                totalPathLength += pathLength;
             }
+
+            Solution soly = new Solution(tempCities);
+            soly.setTotalLength(totalPathLength);
+
+            steps++;
+
+            if(totalPathLength < currentBest.getTotalLength()){
+                currentBest = soly;
+            }
+
             //TODO: Pauze the timer temporarily
-            List<Line> result = new ArrayList<>();
-            int lineLength = 0;
+            //Line draw shizzle?
             for (int iP = 0; iP < path.size() - 1; iP++) {
                 result.add(new Line(path.get(iP), path.get(iP + 1)));
                 lineLength += result.get(result.size() - 1).getLength();
             }
+
+
+
 
             this.lineLength = lineLength;
             return result;
@@ -117,7 +141,7 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
 
         // The time should be calculated before creating the lines because they're only used for visualization
         this.solveTime = System.nanoTime() - startTime;
-        List result = new List[1,2,3,4,5];
+        List<Line> result = new ArrayList<>();
         this.lineLength = lineLength;
         return result;
 
