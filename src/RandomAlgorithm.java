@@ -17,7 +17,6 @@ public class RandomAlgorithm implements TSPAlgorithm {
     }
 
     public List<Line> solveSteps(int n) {
-        System.out.println("Solve random");
         if (this.cities.size() < 2) {
             this.solveTime = 0;
             return new ArrayList<>();

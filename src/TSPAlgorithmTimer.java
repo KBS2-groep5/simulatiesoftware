@@ -1,7 +1,7 @@
 class TSPAlgorithmTimer {
     private static long getAverageTime(TSPAlgorithm algorithm) {
         long totalTime = 0;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             algorithm.solve();
             totalTime += algorithm.getSolveTime();
         }

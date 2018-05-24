@@ -46,7 +46,7 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
         algorithmSelectorLabel.setBounds(510, 20, 120, 20);
         add(algorithmSelectorLabel);
 
-        algorithmSelector = new JComboBox<>(new String[]{"Greedy", "Random", "BruteForceAlgorithm"});
+        algorithmSelector = new JComboBox<>(new String[]{"Greedy", "Random", "BruteForceAlgorithm", "2-Opt", "Eigen"});
         algorithmSelector.setBounds(640, 20, 110, 20);
         algorithmSelector.addActionListener(this);
         add(algorithmSelector);
@@ -160,16 +160,24 @@ public class AlgorithmGUI extends JFrame implements ActionListener, ChangeListen
             if (selected == null) return;
 
             if (selected.equals(GreedyAlgorithm.NAME)) {
-                var cities = this.algorithm.getCityList();
-                this.algorithm = new GreedyAlgorithm(cities);
+//                var cities = this.algorithm.getCityList();
+                this.algorithm = new GreedyAlgorithm(this.algorithm.getCityList());
             }
             if (selected.equals(RandomAlgorithm.NAME)) {
-                var cities = this.algorithm.getCityList();
-                this.algorithm = new RandomAlgorithm(cities);
+//                var cities = this.algorithm.getCityList();
+                this.algorithm = new RandomAlgorithm(this.algorithm.getCityList());
             }
             if(selected.equals(BruteForceAlgorithm.NAME)) {
-                var cities = this.algorithm.getCityList();
-                this.algorithm = new BruteForceAlgorithm(cities);
+//                var cities = this.algorithm.getCityList();
+                this.algorithm = new BruteForceAlgorithm(this.algorithm.getCityList());
+            }
+			if(selected.equals(optAlgorithm.NAME)) {
+//                var cities = this.algorithm.getCityList();
+                this.algorithm = new optAlgorithm(this.algorithm.getCityList());
+            }
+			if(selected.equals(EigenAlgorithm.NAME)) {
+//                var cities = this.algorithm.getCityList();
+                this.algorithm = new EigenAlgorithm(this.algorithm.getCityList());
             }
 
             this.panel.setPath(this.algorithm.solveSteps(this.cursor));

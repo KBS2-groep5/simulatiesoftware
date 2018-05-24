@@ -20,7 +20,7 @@ public class AlgorithmPainter extends JPanel {
     void setPath(List<Line> path) {
         this.path = path;
     }
-
+	
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
