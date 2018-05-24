@@ -1,29 +1,37 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorithm {
-    static final String NAME = "BruteForce";
+    static final String NAME = "BruteForceAlgorithm";
     public ArrayList<Integer> calcArray = new ArrayList<>();
-    //private ArrayList<Solution> solutions;                   <- niet praktisch om bij te houden met Brute Force, gezien de gigantiche hoeveelheid oplossingen.
+    private ArrayList<Solution> solutions;
     private ArrayList<City> tempCities = new ArrayList<>();
-    private int citiesCount;
-    private long maxSolutions = 0;
+    private int citiesCount = 0;
+    private int maxSolutions = 0;
     double pathLength = 0;
     double totalPathLength = 0;
     private Solution currentBest;
 
-    private ArrayList<City> cities;
+    private ArrayList<City> cities = new ArrayList<>();
     private long solveTime = 0;
     private int lineLength = 0;
 
-    public BruteForceAlgorithm(List<City> cities) {
+    BruteForceAlgorithm(List<City> cities) {
         for (City c : cities) {
             this.cities.add(c);
             this.tempCities.add(c);
         }
-        //this.solutions = new ArrayList<>();
+
+        this.solutions = new ArrayList<>();
         this.citiesCount = this.cities.size();
         this.maxSolutions = super.factorial(citiesCount);
+
+        // Fill CalcArray with int values for referencing index values later on.
+        for (int iC = 0; iC < citiesCount; iC++) {
+            calcArray.add(iC);
+        }
+        System.out.println(calcArray);
 
         //TODO: remove these temporary checkers
         System.out.println(tempCities);
@@ -49,19 +57,11 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
         int steps = 0;
 
 
-        // Fill CalcArray with int values for referencing index values later on.
-        for (int iC = 0; iC < citiesCount; iC++) {
-            calcArray.add(iC);
-        }
 
-        for (int iD = 0; iD < 0; iD++){
-            pathLength = this.tempCities.get(iD).getDistanceTo(tempCities.get(iD+1));
-            totalPathLength += pathLength;
-        }
 
-        Solution solx = new Solution(tempCities);
-        solx.setTotalLength(totalPathLength);
-        currentBest = solx;
+        this.solutions.add(new Solution(tempCities));
+        this.solutions.get(0).setTotalLength(totalPathLength);
+        currentBest = solutions.get(0);
         steps++;
 
         // Start algorythm loop
@@ -78,31 +78,50 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
             int iI = 0;
             for (int iL = 0; iL < citiesCount - 1; iL++) {
                 if (calcArray.get(iL) < calcArray.get(iL + 1)) {
-                    iI = iL;
+                    for(int iK : calcArray){
+                        if(iK == iL){
+                            iI = iL;
+                        }
+                    }
                 }
             }
+            System.out.println(iI);
 
             // Find the largest y such that P[x]<P[y].
             int iJ = 0;
-            for (int iLL = 0; iLL < citiesCount - 1; iLL++) {
-                if (iJ > iI) {
-                    iJ = iLL;
+            for (int iLL = iI+1; iLL < citiesCount; iLL++) {
+                if (calcArray.get(iLL) > calcArray.get(iI)) {
+                    for(int iK : calcArray){
+                        if(iK == iLL){
+                            iJ = iK;
+                        }
+                    }
                 }
             }
+            System.out.println(iJ);
             // Swap P[x] and P[y].
             super.swap(calcArray, iI, iJ);
+            System.out.println(calcArray);
 
-            // Reverse P[x+1 .. n].
-            int iX = iI;
+            // Reverse INDEX P[x+1 .. n].
+            int iX = 0;
+            for(int iK : calcArray){
+                if(iK == iI){
+                    iX = iK+1;
+                }
+            }
             int jX = citiesCount - 1;
             int countToReverse = citiesCount - iI;
-            for (int iLLL = 0; iLLL < countToReverse / 2; iLLL++) {
-                super.swap(calcArray, iX, jX);
-                iX++;
-                jX--;
+            if(iX < jX) {
+                for (int iLLL = 0; iLLL < countToReverse / 2; iLLL++) {
+                    super.swap(calcArray, iX, jX);
+                    iX++;
+                    jX--;
+                }
             }
-            for (int iTC = 0; iTC < citiesCount; iTC++) {
-                tempCities.set(iTC, cities.get(calcArray.get(iTC)));
+            System.out.println(calcArray);
+            for (int iTC = 0; iTC < citiesCount-1; iTC++) {
+                this.tempCities.set(iTC, cities.get(calcArray.get(iTC)));
                 path.add(this.tempCities.get(iTC));
             }
 
@@ -112,21 +131,35 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
                 totalPathLength += pathLength;
             }
 
-            Solution soly = new Solution(tempCities);
-            soly.setTotalLength(totalPathLength);
+            this.solutions.add(new Solution(tempCities));
+            this.solutions.get(i).setTotalLength(totalPathLength);
 
             steps++;
 
-            if(totalPathLength < currentBest.getTotalLength()){
-                currentBest = soly;
+            if(solutions.get(i).getTotalLength() < currentBest.getTotalLength()){
+                currentBest = solutions.get(i);
             }
+            System.out.println(path.size());
+
 
             //TODO: Pauze the timer temporarily
-            //Line draw shizzle?
-            for (int iP = 0; iP < path.size() - 1; iP++) {
-                result.add(new Line(path.get(iP), path.get(iP + 1)));
+            //Line draw for current solution.
+            for (int iP = 0; iP < path.size()-1; iP++) {
+                Line lY = new Line(path.get(iP), path.get(iP + 1));
+                result.add(lY);
                 lineLength += result.get(result.size() - 1).getLength();
+                lineLength += lY.getLength();
             }
+
+            // Draw current best.
+            for(int iB = 0; iB < currentBest.getSolCities().size()-1; iB++){
+                Line lX = new Line(currentBest.getSolCity(iB),currentBest.getSolCity(iB+1));
+                result.add(lX);
+                lX.setColor(Color.red);
+                lineLength += lX.getLength();
+            }
+            System.out.println(result.size());
+            System.out.println();
 
 
 

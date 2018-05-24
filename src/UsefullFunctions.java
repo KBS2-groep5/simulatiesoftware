@@ -3,10 +3,14 @@ import java.util.Collection;
 
 public abstract class UsefullFunctions {
 
-    public long factorial(int x){
-        long i,fact=1;
-        for(i=1;i<=x;i++) {
-            fact = fact * i;
+    public int factorial(int x){
+        int i, fact = 1;
+        if(x > 12){
+            fact = 2147483646;
+        }else {
+            for (i = 1; i <= x; i++) {
+                fact = fact * i;
+            }
         }
         return fact;
     }
