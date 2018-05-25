@@ -32,11 +32,6 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
             calcArray.add(iC);
         }
         System.out.println(calcArray);
-
-        //TODO: remove these temporary checkers
-        System.out.println(tempCities);
-        System.out.println(this.citiesCount);
-        System.out.println(maxSolutions);
     }
 
     // This method is only used in TSPAlgoritmTimer
@@ -65,7 +60,7 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
         steps++;
 
         // Start algorythm loop
-        for (int i = 0; i < maxSolutions - 1; i++) {
+        for (int i = 0; i < maxSolutions -1; i++) {
             List<City> path = new ArrayList<>();
             path.add(this.tempCities.get(0));
             List<Line> result = new ArrayList<>();
@@ -134,8 +129,6 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
             this.solutions.add(new Solution(tempCities));
             this.solutions.get(i).setTotalLength(totalPathLength);
 
-            steps++;
-
             if(solutions.get(i).getTotalLength() < currentBest.getTotalLength()){
                 currentBest = solutions.get(i);
             }
@@ -144,38 +137,37 @@ public class BruteForceAlgorithm extends UsefullFunctions implements TSPAlgorith
 
             //TODO: Pauze the timer temporarily
             //Line draw for current solution.
+            /*
             for (int iP = 0; iP < path.size()-1; iP++) {
                 Line lY = new Line(path.get(iP), path.get(iP + 1));
                 result.add(lY);
                 lineLength += result.get(result.size() - 1).getLength();
                 lineLength += lY.getLength();
             }
+            */
 
-            // Draw current best.
-            for(int iB = 0; iB < currentBest.getSolCities().size()-1; iB++){
-                Line lX = new Line(currentBest.getSolCity(iB),currentBest.getSolCity(iB+1));
-                result.add(lX);
-                lX.setColor(Color.red);
-                lineLength += lX.getLength();
-            }
+
             System.out.println(result.size());
-            System.out.println();
-
-
-
-
-            this.lineLength = lineLength;
-            return result;
 
             //TODO: Start timer again.
         }
 
+        steps++;
 
 
         // The time should be calculated before creating the lines because they're only used for visualization
         this.solveTime = System.nanoTime() - startTime;
         List<Line> result = new ArrayList<>();
         this.lineLength = lineLength;
+
+        System.out.println(currentBest.getSolCities());
+        // Draw current best.
+        for(int iB = 0; iB < currentBest.getSolCities().size()-1; iB++){
+            Line lX = new Line(currentBest.getSolCity(iB),currentBest.getSolCity(iB+1));
+            result.add(lX);
+            lX.setColor(Color.red);
+            lineLength += lX.getLength();
+        }
         return result;
 
 
